@@ -43,6 +43,7 @@
 # 2014-03-01
 
 import os
+import re
 
 def emotionFileReader(stopval=1.0,fileName='labMT1.txt',min=1.0,max=9.0,returnVector=False):
   ## stopval is our lens, \Delta h
@@ -156,13 +157,14 @@ def emotion(tmpStr,someDict,scoreIndex=1,shift=False,happsList=[]):
     freqList = [0 for i in xrange(len(happsList))]
 
   # doing this without the NLTK
-  words = [x.lower().lstrip("?';:.$%&()\\!*[]{}|\"<>,^-_=+").rstrip("@#?';:.$%&()\\!*[]{}|\"<>,^-_=+") for x in tmpStr.split()]
+  words = [x.lower().lstrip("?';:.$%&()\\!*[]{}|\"<>,^-_=+").rstrip("@#?';:.$%&()\\!*[]{}|\"<>,^-_=+") for x in re.split('\s|--',tmpStr,flags=re.UNICODE)]
+  # words = [x.lower().lstrip("?';:.$%&()\\!*[]{}|\"<>,^-_=+").rstrip("@#?';:.$%&()\\!*[]{}|\"<>,^-_=+") for x in tmpStr.split()]
   # only use the if once
   if shift:
     for word in words:
       if word in someDict:
         scoreList.append(float(someDict[word][scoreIndex]))
-        freqList[someDict[word][0]] += 1
+        freqList[int(someDict[word][0])] += 1
   else:
     for word in words:
       if word in someDict:
